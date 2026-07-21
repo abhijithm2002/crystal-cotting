@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Crystal Coat">
+  <rect width="64" height="64" rx="10" fill="#051322"/>
+  <path d="M16 41V23.5C16 18 19.7 14 25.4 14c4 0 7.1 1.8 8.8 4.8l-5.3 3.1c-.8-1.4-2-2.1-3.5-2.1-2.4 0-4 1.6-4 4v16.8c0 2.4 1.6 4 4 4 1.6 0 2.9-.8 3.7-2.3l5.2 3.2c-1.8 3.1-4.9 4.9-8.9 4.9C19.7 50.4 16 46.5 16 41Z" fill="#fff"/>
+  <path d="M38 50V14h6v13.3h3.4L52.8 14H59l-6.7 16.2L60 50h-6.5l-5.8-16.8H44V50h-6Z" fill="#fff"/>
+  <path d="M16 56h32" stroke="#32bfe8" stroke-width="5" stroke-linecap="round"/>
+</svg>
