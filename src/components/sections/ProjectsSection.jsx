@@ -49,10 +49,10 @@ export function ProjectsSection() {
                     <Swiper
                       className="absolute inset-0 h-full w-full min-w-0"
                       modules={[Autoplay, Navigation, Pagination]}
-                      autoplay={{ delay: 2800, disableOnInteraction: false }}
-                      pagination={{ clickable: true }}
-                      navigation
-                      loop
+                      autoplay={images.length > 1 ? { delay: 2800, disableOnInteraction: false } : false}
+                      pagination={images.length > 1 ? { clickable: true } : false}
+                      navigation={images.length > 1}
+                      loop={images.length > 1}
                       lazyPreloadPrevNext={1}
                     >
                       {images.map((image) => (

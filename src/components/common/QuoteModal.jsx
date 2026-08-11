@@ -8,6 +8,11 @@ export function QuoteModal() {
 
   return (
     <Modal state={quoteModal}>
+      <Modal.Trigger
+        className="pointer-events-none fixed h-px w-px opacity-0"
+        aria-hidden="true"
+        tabIndex={-1}
+      />
       <Modal.Backdrop className="fixed inset-0 z-[120] bg-charcoal/78 p-4 backdrop-blur-xl">
         <Modal.Container
           size="2xl"

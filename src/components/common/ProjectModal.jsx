@@ -11,6 +11,11 @@ export function ProjectModal({ project, state }) {
 
   return (
     <Modal state={state}>
+      <Modal.Trigger
+        className="pointer-events-none fixed h-px w-px opacity-0"
+        aria-hidden="true"
+        tabIndex={-1}
+      />
       <Modal.Backdrop className="fixed inset-0 z-[120] bg-charcoal/82 p-4 backdrop-blur-xl">
         <Modal.Container
           size="5xl"
@@ -28,9 +33,9 @@ export function ProjectModal({ project, state }) {
                   <Swiper
                     className="h-full"
                     modules={[Navigation, Pagination]}
-                    navigation
-                    pagination={{ clickable: true }}
-                    loop
+                    navigation={images.length > 1}
+                    pagination={images.length > 1 ? { clickable: true } : false}
+                    loop={images.length > 1}
                   >
                     {images.map((image) => (
                       <SwiperSlide key={image}>

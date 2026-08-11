@@ -2,7 +2,7 @@ import { Camera, CirclePlay, Mail, MapPin, MessageCircle, Phone, Share2 } from '
 import { navItems } from '../../constants/siteData'
 import { useSiteContent } from '../../hooks/useSiteContent'
 import { resolveMediaUrl } from '../../services/api'
-import { buildWhatsAppLink, googleMapSearch } from '../../utils/contactLinks'
+import { buildPhoneLink, buildWhatsAppLink, googleMapSearch } from '../../utils/contactLinks'
 
 const socialIcons = {
   Instagram: Camera,
@@ -11,7 +11,7 @@ const socialIcons = {
 }
 
 export function Footer() {
-  const { homepage, settings, services } = useSiteContent()
+  const { homepage, settings, services, contact } = useSiteContent()
   const footer = homepage?.footer || {}
   const siteName = settings?.siteName || 'Painting Company'
   const logo = resolveMediaUrl(settings?.logoWhite || settings?.logo)
@@ -66,13 +66,18 @@ export function Footer() {
         <div>
           <h3 className="text-sm font-black uppercase tracking-[0.18em] text-amber-cta">Contact</h3>
           <div className="mt-5 grid gap-4 text-sm text-white/72">
-            <a className="flex gap-3 transition hover:text-white" href={`tel:${footer.phone || ''}`}>
+            <a className="flex gap-3 transition hover:text-white" href={buildPhoneLink(contact?.phone || footer.phone, contact?.phoneHref)}>
               <Phone className="mt-0.5 text-amber-cta" size={18} />
-              {footer.phone}
+              {contact?.phone || footer.phone}
             </a>
-            <a className="flex gap-3 transition hover:text-white" href={buildWhatsAppLink(footer.whatsapp)}>
+            <a
+              className="flex gap-3 transition hover:text-white"
+              href={buildWhatsAppLink(contact?.whatsapp || footer.whatsapp, undefined, contact?.whatsappHref)}
+              target="_blank"
+              rel="noreferrer"
+            >
               <MessageCircle className="mt-0.5 text-amber-cta" size={18} />
-              {footer.whatsapp}
+              {contact?.whatsapp || footer.whatsapp}
             </a>
             <a className="flex gap-3 transition hover:text-white" href={`mailto:${footer.email || ''}`}>
               <Mail className="mt-0.5 text-amber-cta" size={18} />

@@ -1,9 +1,31 @@
 // Pure helpers — callers pass in the live contact/homepage-footer data fetched
 // from the API instead of importing a hardcoded `business` object.
 
-export function buildWhatsAppLink(whatsapp, message = 'I would like a free painting quotation.') {
+export function buildWhatsAppLink(
+  whatsapp,
+  message = 'I would like a free painting quotation.',
+  whatsappHref,
+) {
   const digits = (whatsapp || '').replace(/\D/g, '')
-  return `https://wa.me/${digits}?text=${encodeURIComponent(`Hi, ${message}`)}`
+  const baseUrl = digits ? `https://wa.me/${digits}` : whatsappHref?.trim()
+
+  if (!baseUrl) return '#contact'
+
+  try {
+    const url = new URL(baseUrl)
+    if (!url.searchParams.has('text')) {
+      url.searchParams.set('text', `Hi, ${message}`)
+    }
+    return url.toString()
+  } catch {
+    return '#contact'
+  }
+}
+
+export function buildPhoneLink(phone, phoneHref) {
+  const digits = (phone || '').replace(/\D/g, '')
+  if (digits) return `tel:${phone?.trim().startsWith('+') ? '+' : ''}${digits}`
+  return phoneHref?.trim() || '#contact'
 }
 
 export function buildMailto(email, formValues) {

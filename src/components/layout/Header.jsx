@@ -1,4 +1,4 @@
-import { Button, Tooltip } from '@heroui/react'
+import { Button } from '@heroui/react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Menu, MessageCircle, Phone, X } from 'lucide-react'
 import { useState } from 'react'
@@ -7,7 +7,7 @@ import { useScrolled } from '../../hooks/useScrolled'
 import { useLead } from '../../hooks/useLead'
 import { useSiteContent } from '../../hooks/useSiteContent'
 import { resolveMediaUrl } from '../../services/api'
-import { buildWhatsAppLink } from '../../utils/contactLinks'
+import { buildPhoneLink, buildWhatsAppLink } from '../../utils/contactLinks'
 
 export function Header() {
   const scrolled = useScrolled(32)
@@ -17,8 +17,12 @@ export function Header() {
 
   const siteName = settings?.siteName || 'Painting Company'
   const logo = resolveMediaUrl(settings?.logoWhite || settings?.logo)
-  const phoneHref = contact?.phoneHref || `tel:${contact?.phone || ''}`
-  const whatsappLink = buildWhatsAppLink(contact?.whatsapp)
+  const phoneHref = buildPhoneLink(contact?.phone, contact?.phoneHref)
+  const whatsappLink = buildWhatsAppLink(
+    contact?.whatsapp,
+    'I would like a free painting quotation.',
+    contact?.whatsappHref,
+  )
 
   function closeMenu() {
     setOpen(false)
@@ -62,24 +66,21 @@ export function Header() {
         </nav>
 
         <div className="hidden items-center gap-2 lg:flex">
-          <Tooltip>
-            <Tooltip.Trigger>
-              <a
-                className={`grid h-11 w-11 place-items-center rounded-full border transition ${
-                  scrolled
-                    ? 'border-mist bg-white text-royal hover:border-royal'
-                    : 'border-white/30 bg-white/12 text-white hover:bg-white/20'
-                }`}
-                href={whatsappLink}
-                aria-label={`WhatsApp ${siteName}`}
-              >
-                <MessageCircle size={18} />
-              </a>
-            </Tooltip.Trigger>
-            <Tooltip.Content showArrow className="rounded-xl bg-charcoal px-3 py-2 text-xs font-bold text-white">
-              WhatsApp Now
-            </Tooltip.Content>
-          </Tooltip>
+          <a
+            className={`inline-flex min-h-11 items-center gap-2 rounded-full border px-4 text-sm font-black transition ${
+              scrolled
+                ? 'border-mist bg-white text-royal hover:border-royal'
+                : 'border-white/30 bg-white/12 text-white hover:bg-white/20'
+            }`}
+            href={whatsappLink}
+            aria-label={`WhatsApp ${siteName}`}
+            title="WhatsApp Now"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <MessageCircle size={18} />
+            WhatsApp
+          </a>
           <a
             className={`inline-flex min-h-11 items-center gap-2 rounded-full border px-4 text-sm font-black transition ${
               scrolled
@@ -136,6 +137,8 @@ export function Header() {
                 <a
                   className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-emerald-500 px-4 text-sm font-black text-white"
                   href={whatsappLink}
+                  target="_blank"
+                  rel="noreferrer"
                   onClick={closeMenu}
                 >
                   <MessageCircle size={17} /> WhatsApp

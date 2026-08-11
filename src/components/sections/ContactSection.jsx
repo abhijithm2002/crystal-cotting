@@ -1,7 +1,7 @@
 import { Card, Separator } from '@heroui/react'
 import { Clock3, Mail, MapPin, MessageCircle, Phone } from 'lucide-react'
 import { useSiteContent } from '../../hooks/useSiteContent'
-import { buildWhatsAppLink, googleMapSearch } from '../../utils/contactLinks'
+import { buildPhoneLink, buildWhatsAppLink, googleMapSearch } from '../../utils/contactLinks'
 import { LeadForm } from '../forms/LeadForm'
 import { SectionHeading } from '../common/SectionHeading'
 
@@ -23,12 +23,12 @@ export function ContactSection() {
           <Card className="overflow-hidden rounded-[1.8rem] border border-white/15 bg-white/10 shadow-premium backdrop-blur-xl">
             <Card.Content className="p-0">
               <div className="grid gap-4 p-6 sm:p-7">
-                <ContactRow icon={<Phone size={20} />} label="Phone" value={data.phone} href={data.phoneHref || `tel:${data.phone || ''}`} />
+                <ContactRow icon={<Phone size={20} />} label="Phone" value={data.phone} href={buildPhoneLink(data.phone, data.phoneHref)} />
                 <ContactRow
                   icon={<MessageCircle size={20} />}
                   label="WhatsApp"
                   value={data.whatsapp}
-                  href={buildWhatsAppLink(data.whatsapp)}
+                  href={buildWhatsAppLink(data.whatsapp, undefined, data.whatsappHref)}
                 />
                 <ContactRow icon={<Mail size={20} />} label="Email" value={data.email} href={`mailto:${data.email || ''}`} />
                 <ContactRow

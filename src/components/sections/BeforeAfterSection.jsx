@@ -4,7 +4,9 @@ import { SectionHeading } from '../common/SectionHeading'
 
 export function BeforeAfterSection() {
   const { homepage } = useSiteContent()
-  const items = homepage?.beforeAfter || []
+  const items = (homepage?.beforeAfter || []).filter(
+    (item) => item.beforeImage && item.afterImage,
+  )
 
   if (!items.length) return null
 

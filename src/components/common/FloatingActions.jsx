@@ -1,9 +1,8 @@
-import { Tooltip } from '@heroui/react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowUp, MessageCircle, Phone } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useSiteContent } from '../../hooks/useSiteContent'
-import { buildWhatsAppLink } from '../../utils/contactLinks'
+import { buildPhoneLink, buildWhatsAppLink } from '../../utils/contactLinks'
 
 export function FloatingActions() {
   const { contact } = useSiteContent()
@@ -20,14 +19,19 @@ export function FloatingActions() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const phoneHref = contact?.phoneHref || `tel:${contact?.phone || ''}`
+  const phoneHref = buildPhoneLink(contact?.phone, contact?.phoneHref)
+  const whatsappHref = buildWhatsAppLink(
+    contact?.whatsapp,
+    'I would like a free painting quotation.',
+    contact?.whatsappHref,
+  )
 
   return (
     <div className="fixed bottom-5 right-4 z-40 grid gap-3 sm:right-6">
       <FloatLink label="Call Now" href={phoneHref} className="bg-charcoal text-white">
         <Phone size={21} />
       </FloatLink>
-      <FloatLink label="WhatsApp Now" href={buildWhatsAppLink(contact?.whatsapp)} className="bg-emerald-500 text-white">
+      <FloatLink label="WhatsApp Now" href={whatsappHref} external className="bg-emerald-500 text-white">
         <MessageCircle size={22} />
       </FloatLink>
       <AnimatePresence>
@@ -49,21 +53,17 @@ export function FloatingActions() {
   )
 }
 
-function FloatLink({ href, label, className, children }) {
+function FloatLink({ href, label, className, children, external = false }) {
   return (
-    <Tooltip>
-      <Tooltip.Trigger>
-        <a
-          className={`grid h-[3.25rem] w-[3.25rem] place-items-center rounded-full shadow-premium transition hover:-translate-y-1 ${className}`}
-          href={href}
-          aria-label={label}
-        >
-          {children}
-        </a>
-      </Tooltip.Trigger>
-      <Tooltip.Content showArrow className="rounded-xl bg-charcoal px-3 py-2 text-xs font-bold text-white">
-        {label}
-      </Tooltip.Content>
-    </Tooltip>
+    <a
+      className={`grid h-[3.25rem] w-[3.25rem] place-items-center rounded-full shadow-premium transition hover:-translate-y-1 ${className}`}
+      href={href}
+      aria-label={label}
+      title={label}
+      target={external ? '_blank' : undefined}
+      rel={external ? 'noreferrer' : undefined}
+    >
+      {children}
+    </a>
   )
 }

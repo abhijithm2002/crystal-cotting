@@ -58,12 +58,19 @@ export function ServicesSection() {
                   <motion.div key={service._id || service.title} variants={scaleIn}>
                     <Card className="group h-full overflow-hidden rounded-[1.55rem] border border-mist bg-white shadow-card transition duration-500 hover:-translate-y-2 hover:shadow-premium">
                       <div className="image-shine relative aspect-[4/3] overflow-hidden">
-                        <img
-                          className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
-                          src={resolveMediaUrl(service.image)}
-                          alt={service.title}
-                          loading="lazy"
-                        />
+                        {service.image ? (
+                          <img
+                            className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
+                            src={resolveMediaUrl(service.image)}
+                            alt={service.title}
+                            loading="lazy"
+                          />
+                        ) : (
+                          <div
+                            className={`h-full w-full bg-gradient-to-br ${service.accent || 'from-royal to-royal-600'} opacity-90`}
+                            aria-hidden="true"
+                          />
+                        )}
                         <div className="absolute inset-0 bg-gradient-to-t from-charcoal/72 to-transparent" />
                         <span
                           className={`absolute left-5 top-5 grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br ${service.accent || 'from-royal to-royal-600'} text-white shadow-card`}

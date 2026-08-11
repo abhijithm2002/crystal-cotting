@@ -4,6 +4,7 @@ import { CheckCircle2, MessageCircle, Phone, ShieldCheck } from 'lucide-react'
 import { useSiteContent } from '../../hooks/useSiteContent'
 import { useLead } from '../../hooks/useLead'
 import { resolveMediaUrl } from '../../services/api'
+import { buildPhoneLink, buildWhatsAppLink } from '../../utils/contactLinks'
 import { resolveIcon } from '../../utils/iconMap'
 import { fadeUp, staggerContainer } from '../../utils/motion'
 import { PremiumButton } from '../common/PremiumButton'
@@ -21,7 +22,7 @@ const buttonVariants = {
 
 export function HeroSection() {
   const { openQuote } = useLead()
-  const { homepage } = useSiteContent()
+  const { homepage, contact } = useSiteContent()
   const hero = homepage?.hero || {}
   const heroStats = homepage?.heroStats || []
 
@@ -33,6 +34,18 @@ export function HeroSection() {
     const icon = buttonIcons[button.type]
     if (button.link === '#quote') {
       return { onClick: openQuote, variant, icon, showArrow: variant === 'cta' }
+    }
+    if (button.type === 'whatsapp') {
+      return {
+        href: buildWhatsAppLink(contact?.whatsapp, 'I would like a free painting quotation.', contact?.whatsappHref),
+        target: '_blank',
+        rel: 'noreferrer',
+        variant,
+        icon,
+      }
+    }
+    if (button.type === 'call') {
+      return { href: buildPhoneLink(contact?.phone, contact?.phoneHref), variant, icon }
     }
     return { href: button.link, variant, icon }
   }
