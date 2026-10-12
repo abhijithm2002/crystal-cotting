@@ -4,7 +4,7 @@ export default defineConfig({
   use: { browserName: 'chromium', headless: true },
   webServer: [
     { command: 'npm run start:memory --prefix ../crystal-cotting-backend', url: 'http://localhost:5912/health', timeout: 120000, env: { PORT: '5912', MEDIA_STORAGE: 'gridfs', WEBSITE_ORIGIN: 'http://localhost:5184', ADMIN_ORIGIN: 'http://localhost:5183', JWT_SECRET: 'local-browser-test-secret', ADMIN_EMAIL: 'browser@example.com', ADMIN_PASSWORD: 'BrowserTest123!' } },
-    { command: 'npm run dev -- --host 127.0.0.1 --port 5184', url: 'http://localhost:5184', timeout: 60000, env: { VITE_API_BASE_URL: 'http://localhost:5912/api/' } },
-    { command: 'npm run dev --prefix ../crystal-cotting-admin -- --host 127.0.0.1 --port 5183', url: 'http://localhost:5183', timeout: 60000, env: { VITE_API_BASE_URL: 'http://localhost:5912/api/' } },
+    { command: 'npm run build && npm run preview -- --host 127.0.0.1 --port 5184', url: 'http://localhost:5184', timeout: 60000, env: { VITE_API_BASE_URL: 'http://localhost:5912/api/' } },
+    { command: 'npm run build --prefix ../crystal-cotting-admin && npm run preview --prefix ../crystal-cotting-admin -- --host 127.0.0.1 --port 5183', url: 'http://localhost:5183', timeout: 60000, env: { VITE_API_BASE_URL: 'http://localhost:5912/api/' } },
   ],
 })

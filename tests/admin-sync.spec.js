@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs'
 import { test, expect } from '@playwright/test'
 
 test('admin saves reach the public UI, persist on refresh, and work without cookies', async ({ browser }) => {
@@ -19,23 +20,35 @@ test('admin saves reach the public UI, persist on refresh, and work without cook
   await site.goto('http://localhost:5184')
   await expect(site.locator('h1')).toHaveText('Professional Painting & Renovation Services You Can Trust')
   await title.fill('Browser verified painting company')
-  await admin.getByRole('button', { name: 'Save changes' }).click()
-  await expect(admin.getByText('Homepage content saved.')).toBeVisible()
+  await admin.getByRole('button', { name: 'Publish changes' }).click()
+  await expect(admin.getByText('Published successfully. Open or refresh the website to see your changes.')).toBeVisible()
   await site.evaluate(() => window.dispatchEvent(new Event('focus')))
   await expect(site.locator('h1')).toHaveText('Browser verified painting company')
   // Exercise the exact single-image picker shown in the reported failure.
-  await admin.getByRole('button', { name: /Change image|Select image/ }).first().click()
-  const picker = admin.getByRole('dialog')
-  await picker.locator('input[type=file]').setInputFiles({ name: 'hero-test.png', mimeType: 'image/png', buffer: Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==', 'base64') })
-  await expect(picker).not.toBeVisible()
-  await admin.getByRole('button', { name: 'Save changes' }).click()
-  await expect(admin.getByText('Homepage content saved.')).toBeVisible()
+  await admin.getByLabel('Upload Background image', { exact: true }).setInputFiles({ name: 'hero-test.png', mimeType: 'image/png', buffer: readFileSync(new URL('../src/assets/hero.png', import.meta.url)) })
+  await expect(admin.getByText('You have unpublished changes')).toBeVisible()
+  await expect.poll(() => admin.getByRole('img', { name: 'Background image', exact: true }).evaluate(img => img.complete && img.naturalWidth > 0)).toBe(true)
+  await admin.getByRole('button', { name: 'Publish changes' }).click()
+  await expect(admin.getByText('Published successfully. Open or refresh the website to see your changes.')).toBeVisible()
   await site.evaluate(() => window.dispatchEvent(new Event('focus')))
   const heroImage = site.locator('#home > img')
   await expect(heroImage).toHaveAttribute('src', /uploads/)
   await expect.poll(() => heroImage.evaluate(img => img.complete && img.naturalWidth > 0)).toBe(true)
+  // Previously uploaded images can be selected without another upload.
+  await admin.getByRole('group', { name: 'Side image editor', exact: true }).getByRole('button', { name: 'Saved images', exact: true }).click()
+  await admin.getByRole('dialog').getByRole('img', { name: 'hero-test.png', exact: true }).click()
+  await expect(admin.getByRole('dialog')).not.toBeVisible()
+  await expect(admin.getByText('You have unpublished changes')).toBeVisible()
+  await admin.getByRole('button', { name: 'Publish changes' }).click()
+  await expect(admin.getByText('Published successfully. Open or refresh the website to see your changes.')).toBeVisible()
+  // Server rejection stays an actionable error, rather than success/no-URL.
+  await admin.route('**/api/media/upload', route => route.fulfill({ status: 413, contentType: 'application/json', body: JSON.stringify({ success: false, message: 'Image exceeds the upload limit.' }) }))
+  await admin.getByLabel('Upload Background image', { exact: true }).setInputFiles({ name: 'rejected.png', mimeType: 'image/png', buffer: Buffer.from('rejected image') })
+  await expect(admin.getByText('Image exceeds the upload limit.')).toBeVisible()
+  await admin.unroute('**/api/media/upload')
   await admin.reload()
   await expect(admin.getByLabel('Title', { exact: true }).first()).toHaveValue('Browser verified painting company')
+  await admin.screenshot({ path: '/tmp/crystalcoat-admin-publish-preview.png', fullPage: false })
   for (const path of ['services', 'portfolio', 'testimonials', 'faq', 'about', 'contact-page', 'settings', 'media-library', 'gallery', 'contact-messages']) {
     await admin.goto(`http://localhost:5183/${path}`)
     await expect(admin.locator('main')).toBeVisible()
@@ -61,10 +74,23 @@ test('admin saves reach the public UI, persist on refresh, and work without cook
   await galleryImage.scrollIntoViewIfNeeded()
   await expect.poll(() => galleryImage.evaluate(img => img.complete && img.naturalWidth > 0)).toBe(true)
 
+  const oldGalleryUrl = await galleryImage.getAttribute('src')
+  await admin.route(oldGalleryUrl, route => route.fulfill({ status: 404, body: 'Missing file' }))
+  await admin.reload()
+  await expect(admin.getByText('Image missing', { exact: true })).toBeVisible()
+  const chooser = admin.waitForEvent('filechooser')
+  await admin.getByRole('button', { name: 'Replace photo', exact: true }).click()
+  await (await chooser).setFiles({ name: 'recovered.png', mimeType: 'image/png', buffer: readFileSync(new URL('../src/assets/hero.png', import.meta.url)) })
+  await expect(admin.getByText('Image missing', { exact: true })).toHaveCount(0)
+  await expect(admin.getByText('recovered.png')).toBeVisible()
+  await site.evaluate(() => window.dispatchEvent(new Event('focus')))
+  await expect(galleryImage).not.toHaveAttribute('src', oldGalleryUrl)
+  await expect.poll(() => galleryImage.evaluate(img => img.complete && img.naturalWidth > 0)).toBe(true)
+
   await admin.goto('http://localhost:5183/settings')
   await admin.getByLabel('Site name', { exact: false }).fill('Browser Verified Brand')
-  await admin.getByRole('button', { name: 'Save changes' }).click()
-  await expect(admin.getByText(/settings saved/i)).toBeVisible()
+  await admin.getByRole('button', { name: 'Publish changes' }).click()
+  await expect(admin.getByText('Published successfully. Open or refresh the website to see your changes.')).toBeVisible()
   await site.evaluate(() => window.dispatchEvent(new Event('focus')))
   await expect(site.locator('header')).toContainText('Browser Verified Brand')
   const form = site.locator('#contact form')
@@ -80,4 +106,23 @@ test('admin saves reach the public UI, persist on refresh, and work without cook
   expect((await downloaded).suggestedFilename()).toBe('contact-messages.csv')
   expect(errors).toEqual([])
   await context.close()
+})
+
+test('gallery omits unavailable images and hides its section when every image is missing', async ({ page }) => {
+  let showGood = true
+  await page.route('**/api/media/gallery', route => route.fulfill({ json: { success: true, data: [
+    { _id: 'missing', url: '/uploads/test-missing.jpg', originalName: 'Missing.jpg' },
+    ...(showGood ? [{ _id: 'good', url: '/uploads/test-good.png', originalName: 'Good.png' }] : []),
+  ] } }))
+  await page.route('**/uploads/test-missing.jpg', route => route.fulfill({ status: 404, body: 'Not found' }))
+  await page.route('**/uploads/test-good.png', route => route.fulfill({ contentType: 'image/png', body: readFileSync(new URL('../src/assets/hero.png', import.meta.url)) }))
+  await page.goto('http://localhost:5184')
+  await expect(page.locator('#gallery img')).toHaveCount(1)
+  await expect(page.locator('#gallery img')).toHaveAttribute('src', /test-good/)
+  showGood = false
+  await page.evaluate(() => window.dispatchEvent(new Event('focus')))
+  await expect(page.locator('#gallery')).toHaveCount(0)
+  showGood = true
+  await page.evaluate(() => window.dispatchEvent(new Event('focus')))
+  await expect(page.locator('#gallery img')).toHaveCount(1)
 })

@@ -108,3 +108,39 @@ IMAGE UPLOAD REGRESSION — 12 October 2026
 - GridFS original/thumbnail HTTP responses and database reconnect persistence: PASS.
 - Backend integration checks, offline checks, admin lint/build: PASS.
 - These additional changes are local and must be committed/pushed to deploy.
+
+ADMIN UPLOAD AND USABILITY UPDATE — 12 October 2026
+The latest reported uploaded JPG returns HTTP 200 with image/jpeg. The current
+reported failure therefore concerns admin response handling, not that file's storage.
+Uploads and replacements now parse the HTTP response explicitly (including JSON text),
+validate the returned media, and verify that the image loads before selecting it.
+Malformed responses fail clearly rather than becoming blank editable content.
+
+The admin now provides:
+- Direct Upload image buttons and image previews; no upload modal required.
+- Saved images from all sections, with an availability check before selection.
+- A sticky Publish changes bar for Homepage, About, Contact and Site Settings.
+- Unpublished-change status, publishing confirmation, and a View website link.
+- A warning when closing/reloading a page with unpublished edits.
+- Dashboard task shortcuts and clearer menu/section/visibility labels.
+
+To update the site: select the page, upload or choose an image, edit text, click
+Publish changes, then View website. Gallery uploads are published automatically.
+This update requires pushing/redeploying the ADMIN repository. The frontend changes
+in this update are tests/documentation only; no new frontend runtime or backend
+changes are required for this admin fix. Refresh the open admin tab after deployment.
+
+Validation uses production builds, including direct image upload, thumbnail/original
+loading, public homepage display after publish, selecting a saved image, a rejected
+upload, dirty-state indicators, branding, quote submissions and CSV download.
+Changes are uncommitted locally; no production upload/write was performed by the agent.
+
+MISSING GALLERY FILES
+The old /uploads/1789529115760-84fb5a9379496b2c.jpg still returns 404.
+The public gallery now checks photos before displaying them, omits failures, and
+hides the section if no photos can load. It retries on subsequent content refreshes.
+No media records are deleted. In Admin > Gallery, missing images show a warning,
+the original filename, and a Replace photo button. Choose the original photo to
+restore it; replacement publishes automatically and retains the record/order.
+Push/redeploy frontend and admin for these changes. Missing originals must be
+supplied by the owner or restored from backup; code cannot recreate lost bytes.
