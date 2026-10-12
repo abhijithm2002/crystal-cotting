@@ -23,6 +23,17 @@ test('admin saves reach the public UI, persist on refresh, and work without cook
   await expect(admin.getByText('Homepage content saved.')).toBeVisible()
   await site.evaluate(() => window.dispatchEvent(new Event('focus')))
   await expect(site.locator('h1')).toHaveText('Browser verified painting company')
+  // Exercise the exact single-image picker shown in the reported failure.
+  await admin.getByRole('button', { name: /Change image|Select image/ }).first().click()
+  const picker = admin.getByRole('dialog')
+  await picker.locator('input[type=file]').setInputFiles({ name: 'hero-test.png', mimeType: 'image/png', buffer: Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==', 'base64') })
+  await expect(picker).not.toBeVisible()
+  await admin.getByRole('button', { name: 'Save changes' }).click()
+  await expect(admin.getByText('Homepage content saved.')).toBeVisible()
+  await site.evaluate(() => window.dispatchEvent(new Event('focus')))
+  const heroImage = site.locator('#home > img')
+  await expect(heroImage).toHaveAttribute('src', /uploads/)
+  await expect.poll(() => heroImage.evaluate(img => img.complete && img.naturalWidth > 0)).toBe(true)
   await admin.reload()
   await expect(admin.getByLabel('Title', { exact: true }).first()).toHaveValue('Browser verified painting company')
   for (const path of ['services', 'portfolio', 'testimonials', 'faq', 'about', 'contact-page', 'settings', 'media-library', 'gallery', 'contact-messages']) {

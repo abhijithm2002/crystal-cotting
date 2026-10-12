@@ -66,16 +66,17 @@ DEPLOY IN THIS ORDER
    command resets the admin account; do not run it as a routine deploy command.
    Configure SMTP credentials and MAIL_FROM if password reset emails are required.
 
-2. Persistent image storage
-   Attach a persistent disk at /var/data, then set:
-     UPLOADS_DIR=/var/data/uploads
-   Before changing directories/redeploying, back up and copy any surviving files
-   from the old src/uploads directory, including thumb/, into the new location.
-   Setting this variable alone does NOT create a disk. The code supports the path,
-   but account-side disk provisioning has not been performed.
-   Render free services cannot attach disks; use a disk-capable plan or implement
-   external object storage. Images already lost must be restored or uploaded again.
-   References: https://render.com/docs/disks and https://render.com/docs/free
+2. Persistent image storage — updated fix
+   Set MEDIA_STORAGE=gridfs on Render and redeploy the backend.
+   Production now defaults to MongoDB GridFS; originals and thumbnails persist in
+   the existing MongoDB database. No paid Render disk or new storage credentials
+   are needed for GridFS mode. Images count toward database storage usage.
+   Existing /uploads URLs work for both old local files and new GridFS files.
+   Old files already missing from Render must be reuploaded or restored from backup.
+   To repair a used image, select Replace in Media Library; references are updated.
+   Alternatively upload/select it in the page editor and click Save changes.
+   Disk mode is still supported explicitly with MEDIA_STORAGE=disk and UPLOADS_DIR
+   pointing to a persistent disk. The two modes must not be confused.
 
 3. Admin and public website on Vercel
    Deploy the corresponding modified sources to their existing projects.
@@ -99,3 +100,11 @@ From crystal-cotting, run npm run test:e2e after npm ci in all three folders.
 The test starts isolated servers on ports 5912, 5183, 5184 and temporary MongoDB.
 It does not mutate production. First run may download MongoDB/Chromium binaries;
 if Chromium is absent, run npx playwright install chromium.
+
+IMAGE UPLOAD REGRESSION — 12 October 2026
+- Confirmed both reported live gallery URLs return 404 (missing server files).
+- Image picker accepts direct, wrapped and bulk upload response shapes.
+- Actual homepage image-picker upload -> save -> frontend image loading: PASS.
+- GridFS original/thumbnail HTTP responses and database reconnect persistence: PASS.
+- Backend integration checks, offline checks, admin lint/build: PASS.
+- These additional changes are local and must be committed/pushed to deploy.
