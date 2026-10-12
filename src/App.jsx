@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, MotionConfig, motion } from 'framer-motion'
 import { lazy, Suspense } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { SiteLayout } from './layouts/SiteLayout'
@@ -9,6 +9,7 @@ export default function App() {
   const location = useLocation()
 
   return (
+    <MotionConfig reducedMotion="user">
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         <Route element={<SiteLayout />}>
@@ -26,6 +27,7 @@ export default function App() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AnimatePresence>
+    </MotionConfig>
   )
 }
 

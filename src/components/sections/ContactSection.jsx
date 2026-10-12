@@ -21,7 +21,7 @@ export function ContactSection() {
           className="[&_*]:!text-white [&_.bg-royal-100]:!bg-white/10"
         />
 
-        <div className="mt-12 grid gap-7 lg:grid-cols-[0.92fr_1.08fr]">
+        <div className="mt-8 grid gap-7 lg:grid-cols-[0.92fr_1.08fr]">
           <Card className="overflow-hidden rounded-[1.8rem] border border-white/15 bg-white/10 shadow-premium backdrop-blur-xl">
             <Card.Content className="p-0">
               <div className="grid gap-4 p-6 sm:p-7">

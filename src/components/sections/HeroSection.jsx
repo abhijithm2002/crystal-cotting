@@ -7,6 +7,7 @@ import { resolveMediaUrl } from '../../services/api'
 import { buildPhoneLink, buildWhatsAppLink } from '../../utils/contactLinks'
 import { resolveIcon } from '../../utils/iconMap'
 import { fadeUp, staggerContainer } from '../../utils/motion'
+import { TiltSurface } from '../common/TiltSurface'
 import { PremiumButton } from '../common/PremiumButton'
 
 const buttonIcons = {
@@ -52,7 +53,7 @@ export function HeroSection() {
   }
 
   return (
-    <section id="home" className="relative isolate min-h-screen overflow-hidden bg-charcoal text-white">
+    <section id="home" className="hero-section relative isolate overflow-hidden bg-charcoal text-white">
       {hero.backgroundImage ? (
         <img
           className="absolute inset-0 -z-20 h-full w-full object-cover"
@@ -63,7 +64,7 @@ export function HeroSection() {
       ) : null}
       <div className="hero-mesh absolute inset-0 -z-10" />
       <motion.div
-        className="container-premium grid min-h-screen items-center gap-12 pb-12 pt-32 lg:grid-cols-[1.1fr_0.9fr] lg:pt-36"
+        className="hero-layout container-premium grid items-center gap-9 pb-10 pt-32 lg:grid-cols-[1.15fr_0.85fr]"
         initial="hidden"
         animate="visible"
         variants={staggerContainer}
@@ -84,13 +85,13 @@ export function HeroSection() {
 
           <motion.h1
             variants={fadeUp}
-            className="premium-gradient-text mt-6 max-w-4xl text-4xl font-black leading-[0.98] sm:text-6xl lg:text-7xl"
+            className="hero-title mt-5 max-w-4xl"
           >
             {hero.title}
           </motion.h1>
           <motion.p
             variants={fadeUp}
-            className="mt-6 max-w-2xl text-base leading-8 text-white/78 sm:text-lg"
+            className="mt-5 max-w-xl text-base leading-7 text-white/78"
           >
             {hero.subtitle}
           </motion.p>
@@ -107,10 +108,10 @@ export function HeroSection() {
           </motion.div>
 
           {hero.highlightTags?.length ? (
-            <motion.div variants={fadeUp} className="mt-8 grid grid-cols-1 gap-3 min-[520px]:grid-cols-2 sm:flex sm:flex-wrap">
+            <motion.div variants={fadeUp} className="mt-6 flex flex-wrap gap-2">
               {hero.highlightTags.map((item) => (
                 <span
-                  className="inline-flex min-w-0 items-center justify-center gap-2 rounded-full border border-white/14 bg-white/10 px-3 py-2 text-center text-sm font-bold text-white/88 backdrop-blur-xl sm:px-4"
+                  className="inline-flex min-w-0 items-center justify-center gap-2 rounded-full border border-white/14 bg-white/10 px-3 py-2 text-center text-xs font-bold text-white/88 backdrop-blur-xl sm:px-4"
                   key={item}
                 >
                   <CheckCircle2 size={16} className="text-amber-cta" />
@@ -123,17 +124,19 @@ export function HeroSection() {
 
         <motion.div
           variants={fadeUp}
-          className="dark-glass relative hidden rounded-[2rem] p-5 lg:block"
+          className="hero-showcase relative min-w-0"
         >
+          <TiltSurface>
+          <div className="paint-swatches" aria-hidden="true"><i /><i /><i /></div>
           {hero.floatingBadgeText ? (
-            <div className="absolute -right-5 -top-5 grid h-24 w-24 place-items-center rounded-full bg-amber-cta text-center text-sm font-black leading-tight text-charcoal shadow-premium">
+            <div className="hero-seal absolute -right-3 -top-4 z-10 grid h-20 w-20 place-items-center rounded-full bg-amber-cta p-2 text-center text-xs font-bold leading-tight text-charcoal shadow-premium">
               {hero.floatingBadgeText}
             </div>
           ) : null}
           {hero.sideImage ? (
-            <div className="overflow-hidden rounded-[1.55rem] image-shine relative">
+            <div className="overflow-hidden rounded-lg image-shine relative">
               <img
-                className="h-[420px] w-full object-cover"
+                className="hero-project-image w-full object-cover"
                 src={resolveMediaUrl(hero.sideImage)}
                 alt={hero.sideCaption?.title || 'Featured work'}
                 loading="eager"
@@ -153,17 +156,18 @@ export function HeroSection() {
               </div>
             </div>
           ) : null}
+          </TiltSurface>
         </motion.div>
 
         {heroStats.length ? (
           <motion.div
             variants={fadeUp}
-            className="col-span-full grid gap-3 rounded-[1.5rem] border border-white/15 bg-white/10 p-3 backdrop-blur-xl sm:grid-cols-2 lg:grid-cols-4"
+            className="hero-facts col-span-full grid gap-3 border-t border-white/20 pt-5 sm:grid-cols-2 lg:grid-cols-4"
           >
             {heroStats.map(({ label, value, icon }) => {
               const Icon = resolveIcon(icon)
               return (
-                <div key={label} className="flex items-center gap-3 rounded-[1.15rem] bg-white/10 p-4">
+                <div key={label} className="flex items-center gap-3 py-2">
                   <span className="grid h-11 w-11 place-items-center rounded-2xl bg-amber-cta text-charcoal">
                     <Icon size={21} />
                   </span>

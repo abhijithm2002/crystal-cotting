@@ -1,3 +1,4 @@
+import { useReducedMotion } from 'framer-motion'
 import { Card } from '@heroui/react'
 import { MapPin, Quote, Star } from 'lucide-react'
 import { Autoplay, Pagination } from 'swiper/modules'
@@ -7,6 +8,7 @@ import { resolveMediaUrl } from '../../services/api'
 import { SectionHeading } from '../common/SectionHeading'
 
 export function TestimonialsSection() {
+  const reducedMotion = useReducedMotion()
   const { homepage, testimonials } = useSiteContent()
   const intro = homepage?.testimonialsIntro || {}
   const items = testimonials || []
@@ -23,9 +25,9 @@ export function TestimonialsSection() {
         />
 
         <Swiper
-          className="mt-12 !pb-12"
+          className="mt-8 !pb-12"
           modules={[Autoplay, Pagination]}
-          autoplay={{ delay: 3600, disableOnInteraction: false }}
+          autoplay={reducedMotion ? false : { delay: 3600, disableOnInteraction: false }}
           pagination={{ clickable: true }}
           spaceBetween={22}
           slidesPerView={1}

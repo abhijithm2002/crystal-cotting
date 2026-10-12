@@ -9,7 +9,7 @@ export function StatsSection() {
 
   return (
     <section className="relative -mt-8 z-10">
-      <div className="container-premium grid gap-4 rounded-[2rem] border border-white/75 bg-white/80 p-4 shadow-premium backdrop-blur-xl sm:grid-cols-2 lg:grid-cols-4">
+      <div className="container-premium grid gap-4 rounded-2xl border border-white/75 bg-white/80 p-4 shadow-premium backdrop-blur-xl sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => (
           <CounterStat key={stat.label} {...stat} value={Number(stat.value) || 0} />
         ))}

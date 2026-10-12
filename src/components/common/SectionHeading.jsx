@@ -1,5 +1,4 @@
 import { motion } from 'framer-motion'
-import { Chip } from '@heroui/react'
 import { fadeUp, viewport } from '../../utils/motion'
 
 export function SectionHeading({ eyebrow, title, text, align = 'left', className = '' }) {
@@ -13,13 +12,13 @@ export function SectionHeading({ eyebrow, title, text, align = 'left', className
       viewport={viewport}
       variants={fadeUp}
     >
-      <Chip className="mb-4 border border-royal/15 bg-royal-100 px-3 py-1 text-[0.72rem] font-black uppercase tracking-[0.16em] text-royal">
+      <span className="section-kicker">
         {eyebrow}
-      </Chip>
-      <h2 className="text-3xl font-black leading-tight text-charcoal sm:text-4xl lg:text-5xl">
+      </span>
+      <h2 className="section-title text-charcoal">
         {title}
       </h2>
-      {text ? <p className="mt-5 text-base leading-8 text-slate-600 sm:text-lg">{text}</p> : null}
+      {text ? <p className="mt-3 max-w-2xl text-base leading-7 text-slate-600">{text}</p> : null}
     </motion.div>
   )
 }

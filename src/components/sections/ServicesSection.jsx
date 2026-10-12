@@ -56,7 +56,7 @@ export function ServicesSection() {
                 const Icon = resolveIcon(service.icon)
                 return (
                   <motion.div key={service._id || service.title} variants={scaleIn}>
-                    <Card className="group h-full overflow-hidden rounded-[1.55rem] border border-mist bg-white shadow-card transition duration-500 hover:-translate-y-2 hover:shadow-premium">
+                    <Card className="group h-full overflow-hidden rounded-xl border border-mist bg-white shadow-card transition duration-500 hover:-translate-y-2 hover:shadow-premium">
                       <div className="image-shine relative aspect-[4/3] overflow-hidden">
                         {service.image ? (
                           <img

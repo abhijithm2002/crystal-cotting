@@ -42,11 +42,11 @@ export function Header() {
         }`}
       >
         <a className="flex items-center gap-3" href="#home" aria-label={`${siteName} home`}>
-          <span className="grid h-12 w-40 place-items-center overflow-hidden rounded-full bg-white px-3 shadow-sm sm:w-44">
+          <span className="grid min-h-12 w-40 place-items-center overflow-hidden rounded-full bg-white px-3 py-2 shadow-sm sm:w-44">
             {logo ? (
               <img className="h-10 w-full scale-125 object-contain" src={logo} alt={siteName} />
             ) : (
-              <span className="text-sm font-black text-charcoal">{siteName}</span>
+              <span className="text-xs leading-tight font-bold text-charcoal">{siteName}</span>
             )}
           </span>
         </a>
@@ -93,7 +93,7 @@ export function Header() {
             Call Now
           </a>
           <Button
-            className="min-h-11 rounded-full bg-gradient-to-r from-amber-cta to-orange-cta px-5 text-sm font-black text-charcoal shadow-[0_14px_30px_rgba(249,115,22,0.28)]"
+            className="min-h-11 rounded-full bg-amber-cta px-5 text-sm font-black text-charcoal shadow-sm"
             onClick={openQuote}
           >
             Get Free Quote
@@ -151,7 +151,7 @@ export function Header() {
                   <Phone size={17} /> Call
                 </a>
                 <button
-                  className="min-h-12 rounded-full bg-gradient-to-r from-amber-cta to-orange-cta px-4 text-sm font-black text-charcoal"
+                  className="min-h-12 rounded-full bg-amber-cta px-4 text-sm font-black text-charcoal"
                   type="button"
                   onClick={() => {
                     closeMenu()

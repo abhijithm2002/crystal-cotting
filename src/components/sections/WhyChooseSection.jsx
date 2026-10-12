@@ -22,7 +22,7 @@ export function WhyChooseSection() {
         />
 
         <motion.div
-          className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
+          className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
           initial="hidden"
           whileInView="visible"
           viewport={viewport}
@@ -32,7 +32,7 @@ export function WhyChooseSection() {
             const Icon = resolveIcon(icon)
             return (
               <motion.div key={title} variants={scaleIn}>
-                <Card className="group h-full rounded-[1.55rem] border border-white/80 bg-white/76 p-6 shadow-card backdrop-blur-xl transition duration-500 hover:-translate-y-2 hover:shadow-premium">
+                <Card className="group h-full rounded-xl border border-white/80 bg-white/76 p-6 shadow-card backdrop-blur-xl transition duration-500 hover:-translate-y-2 hover:shadow-premium">
                   <Card.Content className="p-0">
                     <span className="grid h-14 w-14 place-items-center rounded-2xl bg-royal-100 text-royal transition group-hover:bg-royal group-hover:text-white">
                       <Icon size={26} />
@@ -48,7 +48,7 @@ export function WhyChooseSection() {
 
         {premiumPromise.title ? (
           <motion.div
-            className="mt-12 rounded-[2rem] bg-charcoal p-7 text-white shadow-premium lg:p-10"
+            className="mt-8 rounded-2xl bg-charcoal p-7 text-white shadow-premium lg:p-10"
             initial="hidden"
             whileInView="visible"
             viewport={viewport}

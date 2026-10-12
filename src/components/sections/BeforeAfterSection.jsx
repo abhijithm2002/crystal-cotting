@@ -19,7 +19,7 @@ export function BeforeAfterSection() {
           title="Transformations that make quality easy to see"
           text="Painting is visual. These comparison sliders help visitors understand the improvement before they ever call."
         />
-        <div className="mt-12 grid gap-7 lg:grid-cols-2">
+        <div className="mt-8 grid gap-7 lg:grid-cols-2">
           {items.map((item) => (
             <BeforeAfterSlider
               key={item.title}

@@ -16,7 +16,7 @@ export function AboutSection() {
   return (
     <section id="about" className="section-pad bg-white">
       {about?.banner ? <img src={resolveMediaUrl(about.banner)} alt="About our company" className="container-premium mb-10 max-h-80 rounded-3xl object-cover" /> : null}
-      <div className="container-premium grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+      <div className="container-premium grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
         <motion.div
           className="relative"
           initial="hidden"
@@ -25,9 +25,9 @@ export function AboutSection() {
           variants={fadeUp}
         >
           {about?.companyImage ? (
-            <div className="image-shine relative overflow-hidden rounded-[2rem] shadow-premium">
+            <div className="image-shine relative overflow-hidden rounded-2xl shadow-premium">
               <img
-                className="h-[620px] w-full object-cover"
+                className="h-[480px] w-full object-cover"
                 src={resolveMediaUrl(about.companyImage)}
                 alt="Company at work"
                 loading="lazy"
@@ -35,7 +35,7 @@ export function AboutSection() {
             </div>
           ) : null}
           {about?.experienceCaption?.label ? (
-            <div className="glass-panel absolute -bottom-7 left-5 right-5 rounded-[1.5rem] p-5 sm:left-auto sm:right-[-2rem] sm:w-72">
+            <div className="glass-panel absolute -bottom-7 left-5 right-5 rounded-[1.5rem] p-5 sm:left-auto sm:right-5 lg:right-[-2rem] sm:w-72">
               <span className="text-sm font-black uppercase tracking-[0.16em] text-royal">
                 {about.experienceCaption.label}
               </span>

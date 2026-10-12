@@ -34,7 +34,7 @@ export function ProjectsSection() {
         />
 
         <motion.div
-          className="mt-12 grid min-w-0 gap-7 lg:grid-cols-3"
+          className="mt-8 grid min-w-0 gap-7 lg:grid-cols-3"
           initial="hidden"
           whileInView="visible"
           viewport={viewport}
