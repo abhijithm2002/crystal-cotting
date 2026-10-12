@@ -1,7 +1,6 @@
-import { buildMailto } from '../utils/contactLinks'
 import { submitContactMessage } from './contentApi'
 
-export async function submitLeadForm(values, { email } = {}) {
+export async function submitLeadForm(values) {
   const errors = {}
 
   if (!values.name?.trim()) errors.name = 'Please enter your name.'
@@ -15,15 +14,10 @@ export async function submitLeadForm(values, { email } = {}) {
     return { ok: false, errors }
   }
 
-  // Persist the enquiry so it shows up under Contact Messages in the admin
-  // dashboard. If the API is unreachable we still let the visitor continue
-  // via their email client so a lead is never silently lost.
   try {
     await submitContactMessage(values)
-  } catch {
-    // non-fatal — fall through to mailto below
+    return { ok: true, errors: {} }
+  } catch (error) {
+    return { ok: false, errors: { submit: error.message || 'Could not send your request. Please try again.' } }
   }
-
-  window.location.href = buildMailto(email, values)
-  return { ok: true, errors: {} }
 }

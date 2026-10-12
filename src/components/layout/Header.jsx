@@ -16,7 +16,7 @@ export function Header() {
   const { settings, contact } = useSiteContent()
 
   const siteName = settings?.siteName || 'Painting Company'
-  const logo = resolveMediaUrl(settings?.logoWhite || settings?.logo)
+  const logo = resolveMediaUrl(settings?.logo || settings?.logoWhite)
   const phoneHref = buildPhoneLink(contact?.phone, contact?.phoneHref)
   const whatsappLink = buildWhatsAppLink(
     contact?.whatsapp,

@@ -11,3 +11,5 @@ export const getSettings = () => apiGet('/api/settings').then((res) => res.data)
 
 export const submitContactMessage = (payload) =>
   apiPost('/api/contact/messages', payload).then((res) => res.data)
+
+export const getGallery = () => apiGet('/api/media/gallery').then((res) => res.data)

@@ -1,0 +1,101 @@
+CRYSTAL COAT — REVIEW AND DEPLOYMENT
+12 October 2026
+
+STATUS
+Code changes are saved in crystalcoat, crystalcoat-admin, and crystalcoat-backend.
+The local integration and browser checks pass. These changes have NOT been deployed.
+The fixes have also been copied into the matching repositories under Documents/GitHub.
+They are uncommitted and have not been pushed.
+Production admin writes were not attempted; live checks were read-only.
+
+MAIN CAUSE
+The backend sends { success: true, data: ... }. Axios puts that envelope in
+response.data, but the admin screens expected the content directly in response.data.
+This broke form hydration, lists, image selection, dashboard values, and editing.
+The shared admin API client now unwraps content and preserves pagination separately.
+
+OTHER FIXES
+- Featured switches now accept partial updates; the public homepage respects them.
+- Public content refreshes on tab focus and every 60 seconds while visible.
+  Background refreshes retain the page and preserve the last successful content.
+- API content bypasses caches. API origins tolerate /api and trailing slashes.
+- Tab-scoped authentication survives reload when cross-site cookies are unavailable.
+- Password changes/reset now affect database-backed login; startup preserves passwords.
+- Startup no longer recreates deliberately deleted starter content.
+- Media replacement updates page references before removing the old file.
+- In-use media cannot be deleted until its references are removed.
+- Gallery uploads/order now have a public endpoint and website section.
+- Media library fetches beyond the first page; contact pagination preserves total count.
+- CSV downloads use the authenticated API client.
+- About/team/certificates, contact banner/socials, theme colors, footer details,
+  hero button destinations, service details/media, project cover and before/after
+  images are connected to the public UI.
+- Quote requests report success only after saving, and appear in Contact Messages.
+- Added environment examples, production API defaults, ignore files, lint configuration,
+  and an end-to-end browser regression test.
+
+VERIFIED
+- Live Render public endpoints: homepage, about, services, portfolio, testimonials,
+  FAQ, contact and settings return HTTP 200 with the expected response envelope.
+- Both deployed Vercel bundles target the same supplied Render backend.
+- Render allows the supplied admin and public website origins.
+- Frontend: npm run lint; npm run build — PASS.
+- Admin: npm run lint; npm run build — PASS (bundle-size advisory remains).
+- Backend: npm test — 39 passing checks, including save/read round-trips,
+  partial featured updates, media replacement, deletion protection, gallery,
+  password changes and restart behavior.
+- Backend: npm run verify:offline — 20 passing checks.
+- Frontend: npm run test:e2e — PASS. Real browser login, cookie-free session reload,
+  admin homepage edit -> already-open public UI, admin refresh persistence,
+  featured toggle, gallery upload/image loading, settings change -> public branding,
+  public quote submission -> admin messages, and authenticated CSV download.
+
+DEPLOY IN THIS ORDER
+1. Backend on Render
+   Deploy the modified crystalcoat-backend source. Use npm ci for build and npm start
+   for start. Preserve the existing persistent MongoDB URI and JWT secret.
+   Required production environment:
+     NODE_ENV=production
+     MONGODB_URI=<existing production MongoDB URI>
+     JWT_SECRET=<existing strong secret>
+     WEBSITE_ORIGIN=https://crystal-cotting.vercel.app
+     ADMIN_ORIGIN=https://crystal-cotting-admin.vercel.app
+   ADMIN_EMAIL and ADMIN_PASSWORD seed a new account. Existing database passwords
+   now remain authoritative, including passwords changed through admin.
+   If an intentional credential recovery is needed, the existing npm run reset-admin
+   command resets the admin account; do not run it as a routine deploy command.
+   Configure SMTP credentials and MAIL_FROM if password reset emails are required.
+
+2. Persistent image storage
+   Attach a persistent disk at /var/data, then set:
+     UPLOADS_DIR=/var/data/uploads
+   Before changing directories/redeploying, back up and copy any surviving files
+   from the old src/uploads directory, including thumb/, into the new location.
+   Setting this variable alone does NOT create a disk. The code supports the path,
+   but account-side disk provisioning has not been performed.
+   Render free services cannot attach disks; use a disk-capable plan or implement
+   external object storage. Images already lost must be restored or uploaded again.
+   References: https://render.com/docs/disks and https://render.com/docs/free
+
+3. Admin and public website on Vercel
+   Deploy the corresponding modified sources to their existing projects.
+   Set the following build-time variable in BOTH projects:
+     VITE_API_BASE_URL=https://crystal-cotting-backend.onrender.com
+   Matching .env.production files are included. Vercel environment overrides must
+   agree with them. Build with npm run build and use output directory dist.
+   Redeploy after changing environment variables.
+   Deploy the backend first because the public website now uses /api/media/gallery.
+   Reference: https://vercel.com/docs/frameworks/frontend/vite
+
+4. Hosted acceptance check
+   Sign in, edit a homepage title, save, and focus/reload the website.
+   Upload/select an image, save its section, and verify it displays.
+   Test a Featured switch, gallery upload, and quote submission.
+   Finally restart the backend and confirm both saved content and images survive.
+   These hosted write/persistence checks are still pending deployment.
+
+REPEAT LOCAL BROWSER TEST
+From crystal-cotting, run npm run test:e2e after npm ci in all three folders.
+The test starts isolated servers on ports 5912, 5183, 5184 and temporary MongoDB.
+It does not mutate production. First run may download MongoDB/Chromium binaries;
+if Chromium is absent, run npx playwright install chromium.

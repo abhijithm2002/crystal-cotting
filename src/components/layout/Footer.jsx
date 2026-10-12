@@ -66,18 +66,18 @@ export function Footer() {
         <div>
           <h3 className="text-sm font-black uppercase tracking-[0.18em] text-amber-cta">Contact</h3>
           <div className="mt-5 grid gap-4 text-sm text-white/72">
-            <a className="flex gap-3 transition hover:text-white" href={buildPhoneLink(contact?.phone || footer.phone, contact?.phoneHref)}>
+            <a className="flex gap-3 transition hover:text-white" href={buildPhoneLink(footer.phone || contact?.phone, footer.phone ? undefined : contact?.phoneHref)}>
               <Phone className="mt-0.5 text-amber-cta" size={18} />
-              {contact?.phone || footer.phone}
+              {footer.phone || contact?.phone}
             </a>
             <a
               className="flex gap-3 transition hover:text-white"
-              href={buildWhatsAppLink(contact?.whatsapp || footer.whatsapp, undefined, contact?.whatsappHref)}
+              href={buildWhatsAppLink(footer.whatsapp || contact?.whatsapp, undefined, footer.whatsapp ? undefined : contact?.whatsappHref)}
               target="_blank"
               rel="noreferrer"
             >
               <MessageCircle className="mt-0.5 text-amber-cta" size={18} />
-              {contact?.whatsapp || footer.whatsapp}
+              {footer.whatsapp || contact?.whatsapp}
             </a>
             <a className="flex gap-3 transition hover:text-white" href={`mailto:${footer.email || ''}`}>
               <Mail className="mt-0.5 text-amber-cta" size={18} />
@@ -92,6 +92,7 @@ export function Footer() {
               <MapPin className="mt-0.5 text-amber-cta" size={18} />
               {footer.address}
             </a>
+            {footer.hours ? <p>{footer.hours}</p> : null}
           </div>
         </div>
       </div>

@@ -1,9 +1,11 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000').trim().replace(/\/+$/, '').replace(/\/api$/, '')
 
 async function request(path, options = {}) {
   const response = await fetch(`${API_BASE_URL}${path}`, {
-    headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+    cache: 'no-store',
+    signal: AbortSignal.timeout(60000),
     ...options,
+    headers: { ...(options.body ? { 'Content-Type': 'application/json' } : {}), ...options.headers },
   })
 
   let payload = null
@@ -18,6 +20,7 @@ async function request(path, options = {}) {
     throw new Error(message)
   }
 
+  if (!payload || payload.success !== true) throw new Error('Invalid API response. Check VITE_API_BASE_URL.');
   return payload
 }
 

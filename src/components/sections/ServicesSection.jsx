@@ -85,6 +85,7 @@ export function ServicesSection() {
                         <Card.Description className="mt-3 text-sm leading-7 text-slate-600">
                           {service.description}
                         </Card.Description>
+                        <ServiceDetails service={service} />
                       </Card.Content>
                     </Card>
                   </motion.div>
@@ -107,6 +108,7 @@ export function ServicesSection() {
                   <motion.div key={service._id || service.title} variants={fadeUp}>
                     <Card className="h-full rounded-[1.35rem] border border-royal/10 bg-gradient-to-br from-royal-100 to-white p-5 shadow-card transition hover:-translate-y-1">
                       <Card.Content className="p-0">
+                        {service.image ? <img src={resolveMediaUrl(service.image)} alt={service.title} loading="lazy" className="mb-4 h-40 w-full rounded-xl object-cover" /> : null}
                         <span className="grid h-12 w-12 place-items-center rounded-2xl bg-white text-royal shadow-sm">
                           <Icon size={23} />
                         </span>
@@ -114,6 +116,7 @@ export function ServicesSection() {
                         <p className="mt-2 text-sm leading-6 text-slate-600">
                           {service.description || 'Available as part of complete home improvement and renovation work.'}
                         </p>
+                        <ServiceDetails service={service} />
                       </Card.Content>
                     </Card>
                   </motion.div>
@@ -129,5 +132,17 @@ export function ServicesSection() {
         </Tabs>
       </div>
     </section>
+  )
+}
+
+function ServiceDetails({ service }) {
+  if (!service.features?.length && !service.banner && !service.gallery?.length) return null
+  return (
+    <details className="mt-4 text-sm">
+      <summary className="cursor-pointer font-bold text-royal">Service details</summary>
+      {service.banner ? <img src={resolveMediaUrl(service.banner)} alt={service.title} loading="lazy" className="mt-3 w-full rounded-xl" /> : null}
+      <ul className="mt-3 list-inside list-disc space-y-2">{(service.features || []).map((feature, index) => <li key={index}>{feature}</li>)}</ul>
+      <div className="mt-3 grid grid-cols-2 gap-2">{(service.gallery || []).map((url, index) => <img key={index} src={resolveMediaUrl(url)} alt={service.title} loading="lazy" className="h-28 w-full rounded-xl object-cover" />)}</div>
+    </details>
   )
 }

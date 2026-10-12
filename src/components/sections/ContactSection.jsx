@@ -1,5 +1,6 @@
 import { Card, Separator } from '@heroui/react'
 import { Clock3, Mail, MapPin, MessageCircle, Phone } from 'lucide-react'
+import { resolveMediaUrl } from '../../services/api'
 import { useSiteContent } from '../../hooks/useSiteContent'
 import { buildPhoneLink, buildWhatsAppLink, googleMapSearch } from '../../utils/contactLinks'
 import { LeadForm } from '../forms/LeadForm'
@@ -12,6 +13,7 @@ export function ContactSection() {
   return (
     <section id="contact" className="section-pad bg-gradient-to-br from-charcoal via-charcoal-700 to-royal text-white">
       <div className="container-premium">
+        {data.banner ? <img src={resolveMediaUrl(data.banner)} alt="Contact us" className="mb-8 max-h-80 w-full rounded-3xl object-cover" /> : null}
         <SectionHeading
           eyebrow={data.intro?.eyebrow || 'Contact'}
           title={data.intro?.title || 'Request a quotation today'}
@@ -38,6 +40,9 @@ export function ContactSection() {
                   href={googleMapSearch(data.mapQuery || data.address)}
                 />
                 <ContactRow icon={<Clock3 size={20} />} label="Business Hours" value={data.hours} />
+              </div>
+              <div className="flex flex-wrap gap-4 px-6 pb-6">
+                {(data.socials || []).map((social, index) => <a key={index} href={social.href} target="_blank" rel="noreferrer" className="font-bold underline">{social.label}</a>)}
               </div>
               <Separator className="bg-white/10" />
               {data.mapEmbedUrl ? (

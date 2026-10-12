@@ -41,7 +41,7 @@ export function ProjectsSection() {
           variants={staggerContainer}
         >
           {projects.map((project) => {
-            const images = (project.images?.length ? project.images : [project.coverImage]).filter(Boolean)
+            const images = [...new Set([project.coverImage, ...(project.images || [])].filter(Boolean))]
             return (
               <motion.div key={project._id || project.title} className="min-w-0" variants={scaleIn}>
                 <Card className="group h-full min-w-0 overflow-hidden rounded-[1.75rem] border border-white/80 bg-white shadow-card transition duration-500 hover:-translate-y-2 hover:shadow-premium">

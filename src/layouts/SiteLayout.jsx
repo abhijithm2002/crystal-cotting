@@ -25,6 +25,11 @@ function SiteContentGate() {
   useEffect(() => {
     if (!settings) return
 
+    for (const [key, variable] of Object.entries({ primary: '--color-royal', secondary: '--color-amber-cta', accent: '--color-orange-cta' })) {
+      const color = settings.themeColors?.[key]
+      if (color && CSS.supports('color', color)) document.documentElement.style.setProperty(variable, color)
+      else document.documentElement.style.removeProperty(variable)
+    }
     const seo = settings.seo || {}
     if (seo.defaultTitle || settings.siteName) {
       document.title = seo.defaultTitle || settings.siteName
@@ -33,7 +38,7 @@ function SiteContentGate() {
     setMetaTag('name', 'keywords', seo.defaultKeywords)
     setMetaTag('property', 'og:title', seo.defaultTitle || settings.siteName)
     setMetaTag('property', 'og:description', seo.defaultDescription)
-    if (seo.ogImage) setMetaTag('property', 'og:image', resolveMediaUrl(seo.ogImage))
+    setMetaTag('property', 'og:image', seo.ogImage ? resolveMediaUrl(seo.ogImage) : '')
 
     if (settings.favicon) {
       let link = document.querySelector('link[rel="icon"]')
@@ -84,8 +89,8 @@ function SiteContentGate() {
 }
 
 function setMetaTag(attr, key, content) {
-  if (!content) return
   let tag = document.querySelector(`meta[${attr}="${key}"]`)
+  if (!content) { tag?.remove(); return }
   if (!tag) {
     tag = document.createElement('meta')
     tag.setAttribute(attr, key)

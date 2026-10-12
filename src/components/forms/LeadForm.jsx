@@ -13,7 +13,7 @@ const initialValues = {
 }
 
 export function LeadForm({ compact = false, onSuccess }) {
-  const { services, contact } = useSiteContent()
+  const { services } = useSiteContent()
   const serviceOptions = useMemo(() => {
     const titles = [...(services?.main || []), ...(services?.secondary || [])].map((item) => item.title)
     return titles.length ? titles : ['Interior Painting', 'Exterior Painting']
@@ -33,9 +33,9 @@ export function LeadForm({ compact = false, onSuccess }) {
   async function handleSubmit(event) {
     event.preventDefault()
     setSubmitting(true)
+    setSent(false)
     const result = await submitLeadForm(
       { ...values, service: values.service || serviceOptions[0] },
-      { email: contact?.email },
     )
     setSubmitting(false)
     setErrors(result.errors)
@@ -120,9 +120,10 @@ export function LeadForm({ compact = false, onSuccess }) {
         <Send size={17} aria-hidden="true" />
       </Button>
 
+      {errors.submit ? <p role="alert" className="text-sm font-bold text-red-600">{errors.submit}</p> : null}
       {sent ? (
         <p className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-bold text-emerald-800">
-          Your email app is opening with the enquiry details. You can also send us a WhatsApp for a faster reply.
+          Your quotation request has been received. We will contact you soon.
         </p>
       ) : null}
     </form>

@@ -15,6 +15,7 @@ export function AboutSection() {
 
   return (
     <section id="about" className="section-pad bg-white">
+      {about?.banner ? <img src={resolveMediaUrl(about.banner)} alt="About our company" className="container-premium mb-10 max-h-80 rounded-3xl object-cover" /> : null}
       <div className="container-premium grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
         <motion.div
           className="relative"
@@ -107,6 +108,20 @@ export function AboutSection() {
             </Accordion>
           ) : null}
         </div>
+      </div>
+      <div className="container-premium mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {(about?.teamImages || []).map((member, index) => (
+          <figure key={`team-${index}`}>
+            {member.image ? <img src={resolveMediaUrl(member.image)} alt={member.name || 'Team member'} className="h-64 w-full rounded-2xl object-cover" loading="lazy" /> : null}
+            <figcaption className="mt-3"><strong>{member.name}</strong><p>{member.role}</p></figcaption>
+          </figure>
+        ))}
+        {(about?.certificates || []).map((certificate, index) => (
+          <figure key={`certificate-${index}`}>
+            {certificate.image ? <img src={resolveMediaUrl(certificate.image)} alt={certificate.title || 'Certificate'} className="h-64 w-full rounded-2xl object-contain" loading="lazy" /> : null}
+            <figcaption className="mt-3 font-bold">{certificate.title}</figcaption>
+          </figure>
+        ))}
       </div>
     </section>
   )

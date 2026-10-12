@@ -1,3 +1,4 @@
+import { BeforeAfterSlider } from './BeforeAfterSlider'
 import { Chip, Modal } from '@heroui/react'
 import { CalendarDays, CheckCircle2, Clock3, MapPin, PackageCheck, X } from 'lucide-react'
 import { Navigation, Pagination } from 'swiper/modules'
@@ -7,7 +8,7 @@ import { resolveMediaUrl } from '../../services/api'
 export function ProjectModal({ project, state }) {
   if (!project) return null
 
-  const images = (project.images?.length ? project.images : [project.coverImage]).filter(Boolean)
+  const images = [...new Set([project.coverImage, ...(project.images || [])].filter(Boolean))]
 
   return (
     <Modal state={state}>
@@ -83,6 +84,7 @@ export function ProjectModal({ project, state }) {
                   />
                 </div>
               </div>
+              {project.beforeImage && project.afterImage ? <div className="p-6"><BeforeAfterSlider item={{ title: project.title, before: project.beforeImage, after: project.afterImage, beforeLabel: 'Before', afterLabel: 'After' }} /></div> : null}
             </Modal.Body>
           </Modal.Dialog>
         </Modal.Container>

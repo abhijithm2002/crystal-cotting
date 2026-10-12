@@ -35,6 +35,7 @@ export function HeroSection() {
     if (button.link === '#quote') {
       return { onClick: openQuote, variant, icon, showArrow: variant === 'cta' }
     }
+    if (button.link) return { href: button.link, variant, icon }
     if (button.type === 'whatsapp') {
       return {
         href: buildWhatsAppLink(contact?.whatsapp, 'I would like a free painting quotation.', contact?.whatsappHref),
